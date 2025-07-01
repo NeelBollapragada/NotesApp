@@ -1,26 +1,33 @@
-import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AddNoteModal from "../../components/AddNoteModal";
 import NoteList from "../../components/NoteList";
+import noteService from "../../services/noteService";
 
 const NoteScreen = () => {
-  const [notes, setNotes] = useState([
-    {
-      id: 1,
-      text: "Note One",
-    },
-    {
-      id: 2,
-      text: "Note Two",
-    },
-    {
-      id: 3,
-      text: "Note Three",
-    },
-  ]);
-
+  const [notes, setNotes] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [newNoteText, setNewNoteText] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  const fetchNotes = async () => {
+    setLoading(true);
+    const response = await noteService.getNotes();
+    if (response.error) {
+      setError(response.error);
+      Alert.alert("Error", response.error);
+    } else {
+      setNotes(response.data);
+      setError(null);
+    }
+
+    setLoading(false);
+  };
 
   const addNote = () => {
     if (newNoteText.trim() === "") {
@@ -28,7 +35,7 @@ const NoteScreen = () => {
     }
     setNotes((prevNotes) => [
       ...prevNotes,
-      { id: Date.now.toString(), text: newNoteText.trim() },
+      { id: Date.now().toString(), text: newNoteText.trim() },
     ]);
 
     setNewNoteText("");
