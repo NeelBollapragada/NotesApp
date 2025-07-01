@@ -27,6 +27,15 @@ const databaseService = {
       return { error: error.message };
     }
   },
+
+  async updateDocument(dbId, colId, id, data) {
+    try {
+      return await database.updateDocument(dbId, colId, id, data);
+    } catch (error) {
+      console.log("Error updating document", error.message);
+      return { error: error.message };
+    }
+  },
 };
 
 export default databaseService;

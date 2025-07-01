@@ -46,6 +46,18 @@ const noteService = {
 
     return { success: true };
   },
+
+  async updateNote(noteId, text) {
+    const response = await databaseService.updateDocument(dbId, colId, noteId, {
+      text,
+    });
+
+    if (response?.error) {
+      return { error: response.error };
+    }
+
+    return { data: response };
+  },
 };
 
 export default noteService;
