@@ -1,38 +1,69 @@
 import { Stack } from "expo-router";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { AuthProvider, useAuth } from "../contexts/AuthContext";
+
+const HeaderLogout = () => {
+  const { user, logout } = useAuth();
+
+  return user ? (
+    <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+      <Text style={styles.logoutText}>Logout</Text>
+    </TouchableOpacity>
+  ) : null;
+};
 
 const RootLayout = () => {
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: "#ff8c00",
-        },
-        headerTintColor: "#fff",
-        headerTitleStyle: {
-          fontSize: 20,
-          fontWeight: "bold",
-        },
-        contentStyle: {
-          paddingHorizontal: 10,
-          paddingTop: 10,
-          backgroundColor: "#fff",
-        },
-        headerTitleAlign: "center",
-      }}
-    >
-      <Stack.Screen name="index" options={{ title: "Home" }} />
-      <Stack.Screen
-        name="notes"
-        options={{
-          headerTitle: "Notes",
+    <AuthProvider>
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#ff8c00",
+          },
+          headerTintColor: "#fff",
           headerTitleStyle: {
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: "bold",
           },
+          headerRight: () => <HeaderLogout />,
+          contentStyle: {
+            paddingHorizontal: 10,
+            paddingTop: 10,
+            backgroundColor: "#fff",
+          },
+          headerTitleAlign: "center",
         }}
-      />
-    </Stack>
+      >
+        <Stack.Screen name="index" options={{ title: "Home" }} />
+        <Stack.Screen
+          name="notes"
+          options={{
+            headerTitle: "Notes",
+            headerTitleStyle: {
+              fontSize: 18,
+              fontWeight: "bold",
+            },
+          }}
+        />
+        <Stack.Screen name="auth/index" options={{ headerTitle: "Login" }} />
+      </Stack>
+    </AuthProvider>
   );
 };
+
+const styles = StyleSheet.create({
+  logoutButton: {
+    marginRight: 15,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    backgroundColor: "#ff3b30",
+    borderRadius: 8,
+  },
+  logoutText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+});
 
 export default RootLayout;
